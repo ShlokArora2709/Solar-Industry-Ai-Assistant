@@ -3,6 +3,7 @@ from llama_index.core import Settings
 import requests
 import json
 from dotenv import load_dotenv
+from llama_index.core import VectorStoreIndex
 load_dotenv()
 Settings.llm=None
 HEADERS = {
@@ -10,23 +11,17 @@ HEADERS = {
     "Content-Type": "application/json",
 }
 
-
-# Function to query the knowledge base
-# def query_knowledge_base(query_text: str) -> str:
-#     query_engine = index.as_query_engine()
-#     response= query_engine.query(query_text)
-#     return str(response)
+def query_knowledge_base(query_text: str,index:VectorStoreIndex) -> str:
+    query_engine = index.as_query_engine()
+    response= query_engine.query(query_text)
+    return str(response)
 
 
-
-def query_openrouter(query_text: str) -> str:
+def query_openrouter(query_text: str, context: str) -> str:
     payload = {
         "model": "google/gemini-2.0-pro-exp-02-05:free",
-        "messages": [
-            {"role": "system", "content": "You are an expert in solar panel technology."},
-            {"role": "user", "content": query_text}
-        ],
-        "max_tokens": 100,
+        "messages": context + [{"role": "user", "content": query_text}],
+        "max_tokens": 300,
     }
 
     response = requests.post(
@@ -35,7 +30,6 @@ def query_openrouter(query_text: str) -> str:
         data=json.dumps(payload)
     )
 
-    # Handle response
     if response.status_code == 200:
         result = response.json()
         return result["choices"][0]["message"]["content"]
@@ -43,7 +37,7 @@ def query_openrouter(query_text: str) -> str:
         return f"Error: {response.status_code}, {response.text}"
 
 
-def download_pdf(url, save_path):
+def download_pdf(url:str, save_path:str) -> bool:   
     try:
         response = requests.get(url, stream=True, timeout=10)
         response.raise_for_status()
