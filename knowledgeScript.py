@@ -24,7 +24,7 @@ topics = [
 ]
 
 
-
+# Download PDFs for each topic
 pdf_files = []
 for topic in topics:
     query = f'"{topic}" filetype:pdf'
@@ -39,7 +39,7 @@ for topic in topics:
         print(f"Error searching for {topic}: {e}")
     time.sleep(3)
 
-
+# Load the PDFs into the vector store for future querying
 documents = SimpleDirectoryReader(PDF_DIR,filename_as_id=True).load_data()
 index = VectorStoreIndex.from_documents(documents)
 index.set_index_id("vector_index")

@@ -10,13 +10,13 @@ HEADERS = {
     "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",
     "Content-Type": "application/json",
 }
-
+#get relevant data from the knowledge base
 def query_knowledge_base(query_text: str,index:VectorStoreIndex) -> str:
     query_engine = index.as_query_engine()
     response= query_engine.query(query_text)
     return str(response)
 
-
+#get response from openrouter api
 def query_openrouter(query_text: str, context: str) -> str:
     payload = {
         "model": "google/gemini-2.0-pro-exp-02-05:free",
@@ -35,7 +35,7 @@ def query_openrouter(query_text: str, context: str) -> str:
     else:
         return f"Error: {response.status_code}, {response.text}"
 
-
+#download pdf files from google search
 def download_pdf(url:str, save_path:str) -> bool:   
     try:
         response = requests.get(url, stream=True, timeout=10)
