@@ -1,0 +1,4 @@
+.env
+solar/
+pdf_files/
+__pycache__/
