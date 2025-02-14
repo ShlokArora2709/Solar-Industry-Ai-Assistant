@@ -20,8 +20,7 @@ def query_knowledge_base(query_text: str,index:VectorStoreIndex) -> str:
 def query_openrouter(query_text: str, context: str) -> str:
     payload = {
         "model": "google/gemini-2.0-pro-exp-02-05:free",
-        "messages": context + [{"role": "user", "content": query_text}],
-        "max_tokens": 300,
+        "messages": [{"role": "system", "content": "You are an expert in solar panel technology. Use the provided context to craft a detailed, well-structured, and concise answer. Incorporate relevant data and present your answer in bullet points where appropriate. do not write according to provided context in every answer"}] + context + [{"role": "user", "content": query_text}],
     }
 
     response = requests.post(

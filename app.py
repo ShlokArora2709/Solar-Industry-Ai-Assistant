@@ -18,11 +18,11 @@ st.title("Solar Panel Expert Chat")
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-query = st.chat_input("Ask about solar panels...")
+
 
 user_input = st.chat_input("Ask me about solar panels...")
 if user_input:
-    knowledge_context = query_knowledge_base(user_input)
+    knowledge_context = query_knowledge_base(user_input,index)
     
     chat_context = [
         {"role": msg["role"], "content": msg["content"]} 
